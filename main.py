@@ -1,6 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 from functools import partial
 from PyQt5.QtCore import QDateTime, Qt, QTimer
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit, QMainWindow,
                              QDial, QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
                              QProgressBar, QPushButton, QRadioButton, QScrollBar, QSizePolicy,
@@ -14,6 +16,7 @@ from chiplookup import ChipLookup
 class ComponentIdentifier(QMainWindow):
     def __init__(self, parent=None):
         super(ComponentIdentifier, self).__init__(parent)
+
 
         self.main_tabs = QTabWidget()
 
@@ -46,7 +49,9 @@ class ComponentIdentifier(QMainWindow):
 
         self.setCentralWidget(self.main_tabs)
 
-        self.setWindowTitle("Main Window")
+        self.setWindowTitle("ComponentIdentifier")
+        self.setWindowIcon(QIcon('resource/icon.png'))
+
         QApplication.setStyle(QStyleFactory.create('Fusion'))
 
     def create_capacitor_tab(self):
@@ -107,9 +112,15 @@ class ComponentIdentifier(QMainWindow):
 
 
 if __name__ == '__main__':
-
     import sys
+    import os
 
+    # change dir
+    abspath = os.path.realpath(__file__)
+    dname = os.path.dirname(abspath)
+    os.chdir(dname)
+
+    # run app
     app = QApplication(sys.argv)
     gallery = ComponentIdentifier()
     gallery.show()

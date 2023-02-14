@@ -1,14 +1,11 @@
 from os import listdir
 from os.path import isfile, join, splitext
-from PyQt5.QtWidgets import (QApplication, QTabWidget, QGridLayout, QLineEdit,
+from PyQt5.QtWidgets import (QApplication, QTabWidget, QGridLayout, QLineEdit, QComboBox,
                              QWidget, QLabel, QPushButton, QStyleFactory, QCompleter)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 
-# chip_names = ['555', '556', 'TL072', 'TL074']
 image_folder = 'resource/chips'
-chip_files = [f for f in listdir(image_folder) if isfile(join(image_folder, f))]
-chip_names = [splitext(f)[0] for f in chip_files]
 
 
 class ChipLookup(QWidget):
@@ -20,14 +17,23 @@ class ChipLookup(QWidget):
         self.parent = parent
         self.current_chip = None
 
+        # get names and files
+        self.chip_files = [f for f in listdir(
+            image_folder) if isfile(join(image_folder, f))]
+        self.chip_names = [splitext(f)[0] for f in self.chip_files]
+
         # auto complete options
-        completer = QCompleter(chip_names)
+        completer = QCompleter(self.chip_names)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
 
         # create line edit and add auto complete
         lbl_chipname = QLabel("&Chip Name? ")
-        self.edit_chipname = QLineEdit()
-        self.edit_chipname.setCompleter(completer)
+        # self.edit_chipname = QLineEdit()
+        # self.edit_chipname.setCompleter(completer)
+        self.edit_chipname = QComboBox()
+        self.edit_chipname.setEditable(True)
+        self.edit_chipname.addItems(self.chip_names)
+
         lbl_chipname.setBuddy(self.edit_chipname)
         layout.addWidget(lbl_chipname, 0, 0)
         layout.addWidget(self.edit_chipname, 0, 1)
@@ -35,17 +41,21 @@ class ChipLookup(QWidget):
         self.image_lbl = QLabel()
         layout.addWidget(self.image_lbl, 2, 0, 1, 2)
 
-        self.edit_chipname.returnPressed.connect(self.lookup_chip)
-
+        # self.edit_chipname.returnPressed.connect(self.lookup_chip)
+        self.edit_chipname.editTextChanged.connect(self.lookup_chip)
+        self.edit_chipname.currentIndexChanged.connect(self.lookup_chip)
         self.setLayout(layout)
 
+        self.lookup_chip()
+
     def lookup_chip(self):
-        new_chip = self.edit_chipname.text()
-        print(new_chip)
+        # new_chip = self.edit_chipname.text()
+        new_chip = self.edit_chipname.currentText()
         if new_chip == self.current_chip:
             return  # no need for update
-        if new_chip in chip_names:
-            image_path = join(image_folder, chip_files[chip_names.index(new_chip)])
+        if new_chip in self.chip_names:
+            image_path = join(
+                image_folder, self.chip_files[self.chip_names.index(new_chip)])
         else:
             image_path = join(image_folder, '..', "not_found.jpg")
 
@@ -57,10 +67,12 @@ class ChipLookup(QWidget):
         #     width = self.parent.frameGeometry().width()
         #     height = self.parent.frameGeometry().height()
         # else:
-        width = self.window().frameGeometry().width()
-        height = self.window().frameGeometry().height()
-        print(width, ", ", height)
-        pixmap = pixmap.scaled(width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        #     width = self.window().frameGeometry().width()
+        #     height = self.window().frameGeometry().height()
+        width = 500
+        height = 500
+        pixmap = pixmap.scaled(
+            width, height, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
         self.image_lbl.setPixmap(pixmap)
         self.current_chip = new_chip

@@ -31,8 +31,10 @@ column_list_6bands = ["D1", "D2", "D3", "Mult", "Tol", "Tempco"]
 
 
 color_list_4bands = [
-    [None, "Brown", "Red", "Orange", "Yellow", "Green", "Blue", "Violet", "Gray", "White"],
-    ["Black", "Brown", "Red", "Orange", "Yellow", "Green", "Blue", "Violet", "Gray", "White"],
+    [None, "Brown", "Red", "Orange", "Yellow",
+        "Green", "Blue", "Violet", "Gray", "White"],
+    ["Black", "Brown", "Red", "Orange", "Yellow",
+        "Green", "Blue", "Violet", "Gray", "White"],
     ["Black", "Brown", "Red", "Orange", "Yellow", "Green",
         "Blue", "Violet", "Gray", "White", "Gold", "Silver"],
     [None, "Brown", "Red", "Orange", "Yellow", "Green",
@@ -40,9 +42,12 @@ color_list_4bands = [
 ]
 
 color_list_5bands = [
-    [None, "Brown", "Red", "Orange", "Yellow", "Green", "Blue", "Violet", "Gray", "White"],
-    ["Black", "Brown", "Red", "Orange", "Yellow", "Green", "Blue", "Violet", "Gray", "White"],
-    ["Black", "Brown", "Red", "Orange", "Yellow", "Green", "Blue", "Violet", "Gray", "White"],
+    [None, "Brown", "Red", "Orange", "Yellow",
+        "Green", "Blue", "Violet", "Gray", "White"],
+    ["Black", "Brown", "Red", "Orange", "Yellow",
+        "Green", "Blue", "Violet", "Gray", "White"],
+    ["Black", "Brown", "Red", "Orange", "Yellow",
+        "Green", "Blue", "Violet", "Gray", "White"],
     ["Black", "Brown", "Red", "Orange", "Yellow", "Green",
         "Blue", "Violet", "Gray", "White", "Gold", "Silver"],
     [None, "Brown", "Red", "Orange", "Yellow", "Green",
@@ -50,9 +55,12 @@ color_list_5bands = [
 ]
 
 color_list_6bands = [
-    [None, "Brown", "Red", "Orange", "Yellow", "Green", "Blue", "Violet", "Gray", "White"],
-    ["Black", "Brown", "Red", "Orange", "Yellow", "Green", "Blue", "Violet", "Gray", "White"],
-    ["Black", "Brown", "Red", "Orange", "Yellow", "Green", "Blue", "Violet", "Gray", "White"],
+    [None, "Brown", "Red", "Orange", "Yellow",
+        "Green", "Blue", "Violet", "Gray", "White"],
+    ["Black", "Brown", "Red", "Orange", "Yellow",
+        "Green", "Blue", "Violet", "Gray", "White"],
+    ["Black", "Brown", "Red", "Orange", "Yellow",
+        "Green", "Blue", "Violet", "Gray", "White"],
     ["Black", "Brown", "Red", "Orange", "Yellow", "Green",
         "Blue", "Violet", "Gray", "White", "Gold", "Silver"],
     ["Black", "Brown", "Red", "Orange", "Yellow", "Green",
@@ -112,13 +120,18 @@ class ResistorTab(QWidget):
             self.buttons.append([])
             for row_idx, row_color in enumerate(column_list):
                 if row_color:
+                    if row_idx == 0:
+                        x_color = 'white'
+                    else:
+                        x_color = 'black'
                     btn = QPushButton()
                     btn.setStyleSheet("font-weight: bold; background-color: " +
-                                      resistor_band_colors[row_color.lower()])
+                                      resistor_band_colors[row_color.lower()] + f"; color: {x_color}")
                     btn.setFixedWidth(col_width)
                     btn.setFixedHeight(int(col_width / 2))
                     layout.addWidget(btn, row_idx + 1, col_idx)
-                    btn.clicked.connect(partial(self.set_active_button, col_idx, row_idx))
+                    btn.clicked.connect(
+                        partial(self.set_active_button, col_idx, row_idx))
                     self.buttons[col_idx].append(btn)
                 else:
                     # pass
@@ -170,7 +183,8 @@ class ResistorTab(QWidget):
             tidx = self.active_rows[3]
 
         elif self.num_bands >= 5:
-            rval = self.active_rows[0] * 100 + self.active_rows[1] * 10 + self.active_rows[2]
+            rval = self.active_rows[0] * 100 + \
+                self.active_rows[1] * 10 + self.active_rows[2]
             if self.active_rows[3] < 10:
                 rval *= 10**self.active_rows[3]
             else:
